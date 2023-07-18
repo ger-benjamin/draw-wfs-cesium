@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="data">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/node_modules/@zip.js/zip.js/tests/data/lorem-invalid-crc.zip!/" />
+      <root url="jar://$PROJECT_DIR$/node_modules/@zip.js/zip.js/tests/data/lorem-encrypted.zip!/" />
+      <root url="jar://$PROJECT_DIR$/node_modules/@zip.js/zip.js/tests/data/lorem.zip!/" />
+      <root url="jar://$PROJECT_DIR$/node_modules/@zip.js/zip.js/tests/data/lorem-zip64.zip!/" />
+      <root url="jar://$PROJECT_DIR$/node_modules/@zip.js/zip.js/tests/data/lorem-store.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

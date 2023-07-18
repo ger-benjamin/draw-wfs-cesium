@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+#ol-map {
+    width: 33vw;
+    height: 33vw;
+}
+
+#cesium {
+    width: 100%;
+}
+
+#ex-toolbar > * {
+    margin: 0 0.5rem 0.5rem 0;
+}
