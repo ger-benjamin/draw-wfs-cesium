@@ -11,13 +11,19 @@
 <div class="container">
     <div class="left">
         <div id="ol-map"></div>
+        <div class="tools">
+          <p>No tools</p>
+        </div>
     </div>
     <div id="cesium" class="right">
         <div id="cesiumContainer" class="fullSize"></div>
         <div id="toolbar"></div>
+        <div class="tools">
+          <p>No tools</p>
+        </div>
     </div>
 </div>
-<div id="ex-toolbar">
+<div id="common-tools" class="tools">
     <label for="locations">Location:</label>
     <select name="locations" id="locations" onchange="window.example.locationSelect()">
         <option disabled selected value>-- select an option --</option>

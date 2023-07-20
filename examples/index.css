@@ -12,6 +12,6 @@
     width: 100%;
 }
 
-#ex-toolbar > * {
+.tools > * {
     margin: 0 0.5rem 0.5rem 0;
 }
