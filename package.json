@@ -2,13 +2,9 @@
   "name": "draw-wfs-cesium",
   "version": "1.0.0",
   "description": "Poc draw in OL, store in WFS and read WFS with Cesium",
-  "main": "index.js",
-  "source": "source/index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "npx prettier '{examples/,src/}{**/*,*}.{js,ts,jsx,tsx,html,css}' --write",
-    "prestart": "cp -R node_modules/cesium/Build/Cesium/* dist/ && cp -R ./SampleData dist/",
-    "start": "parcel serve --no-cache examples/*.html --public-url /"
+    "frontend": "cd frontend && npm start",
+    "start": "npm run frontend"
   },
   "keywords": [
     "draw",
@@ -17,27 +13,5 @@
   ],
   "author": "ger-benjamin",
   "license": "BSD-3-Clause",
-  "dependencies": {
-    "cesium": "^1.107.2",
-    "ol": "^7.4.0"
-  },
-  "devDependencies": {
-    "assert": "^2.0.0",
-    "browserify-zlib": "^0.2.0",
-    "buffer": "^6.0.3",
-    "eslint": "^8.45.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^16.0.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "events": "^3.3.0",
-    "https-browserify": "^1.0.0",
-    "parcel": "^2.9.3",
-    "prettier": "^3.0.0",
-    "process": "^0.11.10",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
-    "url": "^0.11.1",
-    "util": "^0.12.5"
-  }
+  "dependencies": {}
 }
