@@ -1,6 +1,5 @@
 .container {
     display: flex;
-    margin-bottom: 1rem;
 }
 
 #ol-map {
@@ -12,6 +11,18 @@
     width: 100%;
 }
 
+.tools {
+    margin-top: 1rem;
+}
+
 .tools > * {
     margin: 0 0.5rem 0.5rem 0;
+}
+
+#common-tools {
+    border-top: solid 1px black;
+}
+
+.title {
+    font-weight: bold;
 }

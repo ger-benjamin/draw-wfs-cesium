@@ -1,5 +1,16 @@
-import { setCenter, setDraw } from '../src/viewer/ol';
-import { createModel, flyTo } from '../src/viewer/cesium';
+import {
+  fromGeoJson as olFromGeoJson,
+  getAllDrawnObjects,
+  setCenter,
+  setDraw,
+  setDrawEndCallback,
+  toGeoJson
+} from '../src/viewer/ol';
+import {
+  createModel,
+  flyTo,
+  fromGeoJson as cesiumFromGeoJson
+} from '../src/viewer/cesium';
 
 window.example = {
   altitude: 0
@@ -33,7 +44,39 @@ const objectSelect = () => {
 };
 window.example.objectSelect = objectSelect;
 
+const loadSelect = async () => {
+  const url = getFormValue('#load');
+  const geojsonData = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  const data = await geojsonData.json();
+  olFromGeoJson(data);
+  cesiumFromGeoJson(data);
+};
+window.example.loadSelect = loadSelect;
+
 const setAltitude = () => {
   window.example.altitude = Number(getFormValue('#altitude'));
 };
 window.example.setAltitude = setAltitude;
+
+const olDrawEndCallback = (evt) => {
+  // FIXME most recent recent is missing.
+  setTimeout(sentGeoJson(toGeoJson(getAllDrawnObjects())), 0);
+};
+setDrawEndCallback(olDrawEndCallback);
+
+const sentGeoJson = (geojson) => {
+  fetch('http://localhost:3000/setdraw', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: geojson
+  }).then((response) => console.log(response.json()));
+};

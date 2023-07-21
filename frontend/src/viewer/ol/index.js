@@ -4,6 +4,7 @@ import TileLayer from 'ol/layer/Tile.js';
 import View from 'ol/View.js';
 import { fromLonLat } from 'ol/proj';
 import { DrawObjects } from './drawObjects';
+import GeoJSON from 'ol/format/GeoJSON.js';
 
 const view = new View({
   center: [0, 0],
@@ -29,4 +30,23 @@ export const setCenter = (lng, lat) => {
 
 export const setDraw = (type) => {
   draw.changeDrawInteraction(type);
+};
+
+export const setDrawEndCallback = (fn) => {
+  draw.drawEndCallback = fn;
+};
+
+export const getAllDrawnObjects = () => {
+  return draw.getAllDrawnObjects();
+};
+
+const geoJson = new GeoJSON();
+export const toGeoJson = (features) => {
+  return geoJson.writeFeatures(features);
+};
+
+export const fromGeoJson = (geojsonData) => {
+  // FIXME me move me
+  const features = geoJson.readFeatures(geojsonData);
+  draw.layer.getSource().addFeatures(features);
 };

@@ -13,6 +13,8 @@ import {
   IonResource
 } from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
+import { GeoJSON } from 'ol/format';
+import { toLonLat } from 'ol/proj';
 
 window.CESIUM_BASE_URL = '/';
 // Ion.defaultAccessToken = '';
@@ -52,18 +54,27 @@ export const flyTo = async (lng, lat) => {
   });
 };
 
-export const createModel = (url, altitude) => {
+export const createModel = (url, altitude, coordinates) => {
   altitude += 0.01;
   if (location.alt === -9999) {
     return;
   }
-  viewer.entities.removeAll();
+  // viewer.entities.removeAll();
   // 46°22′53.814″N 7°37′23.537″E
-  const position = Cartesian3.fromDegrees(
-    location.lng,
-    location.lat,
-    location.alt + altitude
-  );
+  let position;
+  if (!coordinates) {
+    position = Cartesian3.fromDegrees(
+      location.lng,
+      location.lat,
+      location.alt + altitude
+    );
+  } else {
+    position = Cartesian3.fromDegrees(
+      coordinates[0],
+      coordinates[1],
+      location.alt + altitude
+    );
+  }
   const heading = CMath.toRadians(135);
   const pitch = 0;
   const roll = 0;
@@ -81,4 +92,19 @@ export const createModel = (url, altitude) => {
     }
   });
   // viewer.trackedEntity = entity;
+};
+
+const geoJson = new GeoJSON();
+export const fromGeoJson = (geojsonData) => {
+  // FIXME me move me
+  viewer.entities.removeAll();
+  const features = geoJson.readFeatures(geojsonData);
+  features.forEach((feature) => {
+    const type = feature.getGeometry().getType();
+    if (type === 'Point') {
+      const coordinates = toLonLat(feature.getGeometry().getCoordinates());
+      createModel('./SampleData/models/GroundVehicle/GroundVehicle.glb', 0, coordinates);
+    }
+    console.log(`Type: "${type}" is not implemented`);
+  });
 };

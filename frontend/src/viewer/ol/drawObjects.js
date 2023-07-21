@@ -6,6 +6,7 @@ export class DrawObjects {
   map;
   layer;
   draw;
+  drawEndCallback;
 
   constructor (map) {
     this.map = map;
@@ -23,6 +24,7 @@ export class DrawObjects {
   changeDrawInteraction (type) {
     this.removeDrawInteraction();
     this.createDrawInteraction(type);
+    this.addDrawEndCallback();
   }
 
   createDrawInteraction (type) {
@@ -38,4 +40,14 @@ export class DrawObjects {
   removeDrawInteraction () {
     this.map.removeInteraction(this.draw);
   }
+
+  addDrawEndCallback () {
+    if (this.drawEndCallback) {
+      this.draw.on('drawend', (evt) => this.drawEndCallback(evt));
+    }
+  }
+
+  getAllDrawnObjects = () => {
+    return this.layer.getSource().getFeatures();
+  };
 }
