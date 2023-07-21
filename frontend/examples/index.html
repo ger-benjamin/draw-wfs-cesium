@@ -12,14 +12,19 @@
     <div class="left">
         <div id="ol-map"></div>
         <div class="tools">
-          <p>No tools</p>
+            <label for="objects">Objects to draw:</label>
+            <select name="objects" id="objects" onchange="window.example.objectSelect()">
+                <option disabled selected value>-- select an option --</option>
+                <option value="0">Tree (point)</option>
+                <option value="1">Trees (line)</option>
+            </select>
         </div>
     </div>
     <div id="cesium" class="right">
         <div id="cesiumContainer" class="fullSize"></div>
         <div id="toolbar"></div>
         <div class="tools">
-          <p>No tools</p>
+            <p>No tools</p>
         </div>
     </div>
 </div>
@@ -29,12 +34,6 @@
         <option disabled selected value>-- select an option --</option>
         <option value="leukerbad">Leukerbad</option>
         <option value="estavayer">Estavayer-le-lac</option>
-    </select>
-    <label for="objects">Objects to draw:</label>
-    <select name="objects" id="objects" onchange="window.example.objectSelect()">
-        <option disabled selected value>-- select an option --</option>
-        <option value="tree">Tree</option>
-        <option value="tent">Tent</option>
     </select>
     <label for="altitude">Altitude</label>
     <input name="altitude" id="altitude" type="number" value="0" onchange="window.example.setAltitude()"></input>

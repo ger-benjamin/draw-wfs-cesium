@@ -1,4 +1,4 @@
-import { setCenter } from '../src/viewer/ol';
+import { setCenter, setDraw } from '../src/viewer/ol';
 import { createModel, flyTo } from '../src/viewer/cesium';
 
 window.example = {
@@ -22,12 +22,13 @@ const locationSelect = () => {
 window.example.locationSelect = locationSelect;
 
 const objects = [
-  { name: 'tree', url: './SampleData/models/CesiumAir/Cesium_Air.glb' },
-  { name: 'tent', url: './SampleData/models/GroundVehicle/GroundVehicle.glb' }
+  { type: 'Point', url: './SampleData/models/GroundVehicle/GroundVehicle.glb' },
+  { type: 'LineString', url: './SampleData/models/CesiumAir/Cesium_Air.glb' }
 ];
 const objectSelect = () => {
-  const name = getFormValue('#objects');
-  const object = objects.find((obj) => obj.name === name) || objects[1];
+  const index = Number(getFormValue('#objects'));
+  const object = objects[index];
+  setDraw(object.type);
   createModel(object.url, window.example.altitude);
 };
 window.example.objectSelect = objectSelect;
