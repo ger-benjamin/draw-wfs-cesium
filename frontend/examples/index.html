@@ -1,50 +1,69 @@
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="utf-8"/>
+  <head>
+    <meta charset="utf-8" />
     <title>Draw WFS Cesium</title>
-    <link rel="stylesheet" href="./index.css"/>
-    <link rel="stylesheet" href="../node_modules/ol/ol.css"/>
+    <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" href="../node_modules/ol/ol.css" />
     <script type="module" src="./index.js"></script>
-</head>
-<body>
-<div class="container">
-    <div class="left">
+  </head>
+  <body>
+    <div class="container">
+      <div class="left">
         <div id="ol-map"></div>
         <div class="tools">
-            <p class="title">Ol options</p>
+          <p class="title">Ol options</p>
+          <div>
             <label for="objects">Objects to draw:</label>
-            <select name="objects" id="objects" onchange="window.example.objectSelect()">
-                <option disabled selected value>-- select an option --</option>
-                <option value="0">Tree (point)</option>
-                <option value="1">Trees (line)</option>
+            <select name="objects" id="objects" onmouseup="window.example.objectSelect()">
+              <option disabled selected value>-- select an option --</option>
+              <option value="0">Tent (point)</option>
+              <option value="1">Fire camp (point)</option>
+              <option value="2">Tree (point)</option>
+              <option value="3">Trees (Line)</option>
+              <option value="4">Trees (Polygon)</option>
             </select>
+          </div>
+          <div>
+            <label for="altitude">Altitude</label>
+            <input
+              name="altitude"
+              id="altitude"
+              type="number"
+              value="0"
+              onmouseup="window.example.setAltitude()"
+            />
+          </div>
         </div>
-    </div>
-    <div id="cesium" class="right">
+      </div>
+      <div id="cesium" class="right">
         <div id="cesiumContainer" class="fullSize"></div>
         <div id="toolbar"></div>
         <div class="tools">
-            <p class="title">Cesium options</p>
-            <p>No tools</p>
+          <p class="title">Cesium options</p>
+          <p>No tools</p>
         </div>
+      </div>
     </div>
-</div>
-<div id="common-tools" class="tools">
-    <p class="title">Common options</p>
-    <label for="locations">Location:</label>
-    <select name="locations" id="locations" onchange="window.example.locationSelect()">
+    <div id="common-tools" class="tools">
+      <p class="title">Common options</p>
+        <div>
+      <label for="locations">Location:</label>
+      <select name="locations" id="locations" onmouseup="window.example.locationSelect()">
         <option disabled selected value>-- select an option --</option>
         <option value="leukerbad">Leukerbad</option>
         <option value="estavayer">Estavayer-le-lac</option>
-    </select>
-    <label for="load">Load features from:</label>
-    <select name="load" id="load" onchange="window.example.loadSelect()">
+      </select>
+        </div>
+        <div>
+      <label for="load">Load features from:</label>
+      <select name="load" id="load" onmouseup="window.example.loadSelect()">
         <option disabled selected value>-- select an option --</option>
-        <option value="http://localhost:3000/getdraw">http://localhost:3000/getdraw</option>
-    </select>
-    <label for="altitude">Altitude</label>
-    <input name="altitude" id="altitude" type="number" value="0" onchange="window.example.setAltitude()"></input>
-</div>
-</body>
+        <option value="http://localhost:3000/getdraw">
+          http://localhost:3000/getdraw
+        </option>
+    </div>
+      </select>
+    </div>
+  </body>
 </html>

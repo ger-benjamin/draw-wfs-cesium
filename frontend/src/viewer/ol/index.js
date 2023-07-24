@@ -28,12 +28,12 @@ export const setCenter = (lng, lat) => {
   view.setZoom(17);
 };
 
-export const setDraw = (type) => {
-  draw.changeDrawInteraction(type);
+export const setDraw = (type, kind) => {
+  draw.changeDrawInteraction(type, kind);
 };
 
-export const setDrawEndCallback = (fn) => {
-  draw.drawEndCallback = fn;
+export const getDraw = () => {
+  return draw;
 };
 
 export const getAllDrawnObjects = () => {
@@ -45,8 +45,11 @@ export const toGeoJson = (features) => {
   return geoJson.writeFeatures(features);
 };
 
-export const fromGeoJson = (geojsonData) => {
-  // FIXME me move me
-  const features = geoJson.readFeatures(geojsonData);
-  draw.layer.getSource().addFeatures(features);
+export const featuresFromGeoJson = (geojsonData) => {
+  return geoJson.readFeatures(geojsonData);
+};
+
+export const setFeaturesOnDrawing = (features) => {
+  draw.getSource().clear();
+  draw.getSource().addFeatures(features);
 };

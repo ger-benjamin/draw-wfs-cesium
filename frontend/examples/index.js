@@ -1,16 +1,14 @@
+import { debounce } from 'lodash';
 import {
-  fromGeoJson as olFromGeoJson,
+  setFeaturesOnDrawing,
+  featuresFromGeoJson,
   getAllDrawnObjects,
+  getDraw,
   setCenter,
   setDraw,
-  setDrawEndCallback,
   toGeoJson
 } from '../src/viewer/ol';
-import {
-  createModel,
-  flyTo,
-  fromGeoJson as cesiumFromGeoJson
-} from '../src/viewer/cesium';
+import { createModel, flyTo, setFeaturesOnCesium } from '../src/viewer/cesium';
 
 window.example = {
   altitude: 0
@@ -33,13 +31,16 @@ const locationSelect = () => {
 window.example.locationSelect = locationSelect;
 
 const objects = [
-  { type: 'Point', url: './SampleData/models/GroundVehicle/GroundVehicle.glb' },
-  { type: 'LineString', url: './SampleData/models/CesiumAir/Cesium_Air.glb' }
+  { type: 'Point', url: './models/tent3.glb' },
+  { type: 'Point', url: './models/firecamp.glb' },
+  { type: 'Point', url: './models/tree2.glb' },
+  { type: 'LineString', url: './models/tree1.glb' },
+  { type: 'Polygon', url: './models/tree1.glb' }
 ];
 const objectSelect = () => {
   const index = Number(getFormValue('#objects'));
   const object = objects[index];
-  setDraw(object.type);
+  setDraw(object.type, object.url);
   createModel(object.url, window.example.altitude);
 };
 window.example.objectSelect = objectSelect;
@@ -53,9 +54,10 @@ const loadSelect = async () => {
       'Content-Type': 'application/json'
     }
   });
-  const data = await geojsonData.json();
-  olFromGeoJson(data);
-  cesiumFromGeoJson(data);
+  const geoJson = await geojsonData.json();
+  const features = featuresFromGeoJson(geoJson);
+  setFeaturesOnDrawing(features);
+  setFeaturesOnCesium(features);
 };
 window.example.loadSelect = loadSelect;
 
@@ -64,19 +66,21 @@ const setAltitude = () => {
 };
 window.example.setAltitude = setAltitude;
 
-const olDrawEndCallback = (evt) => {
-  // FIXME most recent recent is missing.
-  setTimeout(sentGeoJson(toGeoJson(getAllDrawnObjects())), 0);
-};
-setDrawEndCallback(olDrawEndCallback);
-
-const sentGeoJson = (geojson) => {
-  fetch('http://localhost:3000/setdraw', {
+const sentGeoJson = async () => {
+  const geoJson = toGeoJson(getAllDrawnObjects());
+  const response = await fetch('http://localhost:3000/setdraw', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    body: geojson
-  }).then((response) => console.log(response.json()));
+    body: geoJson
+  });
+  console.log(response);
 };
+const debouceSentGeoJson = debounce(sentGeoJson, 250);
+
+const drawSource = getDraw().getSource();
+drawSource.on('changefeature', debouceSentGeoJson);
+drawSource.on('addfeature', debouceSentGeoJson);
+drawSource.on('removefeature', debouceSentGeoJson);

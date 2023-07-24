@@ -94,16 +94,14 @@ export const createModel = (url, altitude, coordinates) => {
   // viewer.trackedEntity = entity;
 };
 
-const geoJson = new GeoJSON();
-export const fromGeoJson = (geojsonData) => {
-  // FIXME me move me
+export const setFeaturesOnCesium = (features) => {
   viewer.entities.removeAll();
-  const features = geoJson.readFeatures(geojsonData);
   features.forEach((feature) => {
     const type = feature.getGeometry().getType();
     if (type === 'Point') {
       const coordinates = toLonLat(feature.getGeometry().getCoordinates());
-      createModel('./SampleData/models/GroundVehicle/GroundVehicle.glb', 0, coordinates);
+      createModel(feature.get('kind'), 0, coordinates);
+      return;
     }
     console.log(`Type: "${type}" is not implemented`);
   });
