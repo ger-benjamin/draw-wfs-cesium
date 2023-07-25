@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Poc draw in OL, store in WFS and read WFS with Cesium",
   "scripts": {
-    "frontend": "cd frontend && npm start",
-    "backend": "cd backend && npm start",
-    "start": "concurrently 'npm run frontend' 'npm run backend'"
+    "install-frontend": "cd frontend && npm install",
+    "install-backend": "cd backend && npm install",
+    "install-all": "npm install && npm run install-frontend && npm run install-backend",
+    "start-frontend": "cd frontend && npm start",
+    "start-backend": "cd backend && npm start",
+    "start": "concurrently 'npm run start-frontend' 'npm run start-backend'"
   },
   "keywords": [
     "draw",

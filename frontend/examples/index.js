@@ -8,13 +8,17 @@ import {
   setDraw,
   toGeoJson
 } from '../src/viewer/ol';
-import { createModel, flyTo, setFeaturesOnCesium } from '../src/viewer/cesium';
+import { flyTo, setFeaturesOnCesium } from '../src/viewer/cesium';
 
 window.example = {
   altitude: 0
 };
 
-const getFormValue = (selector) => {
+const getFormValue = (selector, isCheckbox = false) => {
+  const element = document.querySelector(selector);
+  if (isCheckbox) {
+    return element.checked;
+  }
   return document.querySelector(selector).value;
 };
 
@@ -35,13 +39,13 @@ const objects = [
   { type: 'Point', url: './models/firecamp.glb' },
   { type: 'Point', url: './models/tree2.glb' },
   { type: 'LineString', url: './models/tree1.glb' },
-  { type: 'Polygon', url: './models/tree1.glb' }
+  { type: 'Polygon', url: './models/tree1.glb' },
+  { type: 'Polygon', url: './models/tent1.glb' }
 ];
 const objectSelect = () => {
   const index = Number(getFormValue('#objects'));
   const object = objects[index];
   setDraw(object.type, object.url);
-  createModel(object.url, window.example.altitude);
 };
 window.example.objectSelect = objectSelect;
 
@@ -56,17 +60,22 @@ const loadSelect = async () => {
   });
   const geoJson = await geojsonData.json();
   const features = featuresFromGeoJson(geoJson);
-  setFeaturesOnDrawing(features);
+  if (!autoSync) {
+    setFeaturesOnDrawing(features);
+  }
   setFeaturesOnCesium(features);
 };
 window.example.loadSelect = loadSelect;
 
-const setAltitude = () => {
-  window.example.altitude = Number(getFormValue('#altitude'));
+let autoSync = true;
+const setAutoSync = () => {
+  autoSync = getFormValue('#autosync', true);
+  console.log(autoSync);
 };
-window.example.setAltitude = setAltitude;
+window.example.setAutoSync = setAutoSync;
 
 const sentGeoJson = async () => {
+  getDraw().removeInteractions();
   const geoJson = toGeoJson(getAllDrawnObjects());
   const response = await fetch('http://localhost:3000/setdraw', {
     method: 'POST',
@@ -76,6 +85,10 @@ const sentGeoJson = async () => {
     },
     body: geoJson
   });
+  if (autoSync) {
+    await loadSelect();
+  }
+  objectSelect();
   console.log(response);
 };
 const debouceSentGeoJson = debounce(sentGeoJson, 250);

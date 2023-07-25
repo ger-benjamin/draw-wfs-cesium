@@ -5,25 +5,25 @@ import Style from 'ol/style/Style';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import { Circle } from 'ol/style';
-import { features } from 'process';
 
 export class DrawObjects {
   map;
   layer;
   draw;
+  modify;
   kind;
 
   constructor (map) {
     this.map = map;
     this.layer = this.createDrawLayer();
+    const source = this.getSource();
+    this.modify = new Modify({ source });
     this.addListeners();
     this.map.addLayer(this.layer);
   }
 
   createDrawLayer () {
     const source = new VectorSource();
-    const modify = new Modify({ source });
-    this.map.addInteraction(modify);
     return new VectorLayer({
       source,
       style: this.styleFn
@@ -68,22 +68,23 @@ export class DrawObjects {
 
   changeDrawInteraction (type, kind) {
     this.kind = kind;
-    this.removeDrawInteraction();
-    this.createDrawInteraction(type);
+    this.removeInteractions();
+    this.addInteractions(type);
   }
 
-  createDrawInteraction (type) {
+  addInteractions (type) {
     const source = this.getSource();
-
     this.draw = new Draw({
       source,
       type
     });
     this.map.addInteraction(this.draw);
+    this.map.addInteraction(this.modify);
   }
 
-  removeDrawInteraction () {
+  removeInteractions () {
     this.map.removeInteraction(this.draw);
+    this.map.removeInteraction(this.modify);
   }
 
   getAllDrawnObjects = () => {

@@ -24,16 +24,6 @@
               <option value="4">Trees (Polygon)</option>
             </select>
           </div>
-          <div>
-            <label for="altitude">Altitude</label>
-            <input
-              name="altitude"
-              id="altitude"
-              type="number"
-              value="0"
-              onmouseup="window.example.setAltitude()"
-            />
-          </div>
         </div>
       </div>
       <div id="cesium" class="right">
@@ -47,23 +37,34 @@
     </div>
     <div id="common-tools" class="tools">
       <p class="title">Common options</p>
-        <div>
-      <label for="locations">Location:</label>
-      <select name="locations" id="locations" onmouseup="window.example.locationSelect()">
-        <option disabled selected value>-- select an option --</option>
-        <option value="leukerbad">Leukerbad</option>
-        <option value="estavayer">Estavayer-le-lac</option>
-      </select>
-        </div>
-        <div>
-      <label for="load">Load features from:</label>
-      <select name="load" id="load" onmouseup="window.example.loadSelect()">
-        <option disabled selected value>-- select an option --</option>
-        <option value="http://localhost:3000/getdraw">
-          http://localhost:3000/getdraw
-        </option>
-    </div>
-      </select>
+      <div>
+        <label for="locations">Location:</label>
+        <select
+          name="locations"
+          id="locations"
+          onmouseup="window.example.locationSelect()"
+        >
+          <option disabled selected value>-- select an option --</option>
+          <option value="leukerbad">Leukerbad</option>
+          <option value="estavayer">Estavayer-le-lac</option>
+        </select>
+      </div>
+      <div>
+        <label for="load">Load features from:</label>
+        <select name="load" id="load" onmouseup="window.example.loadSelect()">
+          <option value="http://localhost:3000/getdraw">
+            http://localhost:3000/getdraw
+          </option>
+        </select>
+        <label for="autosync">Load features from:</label>
+        <input
+          type="checkbox"
+          name="autosync"
+          id="autosync"
+          checked
+          onchange="window.example.setAutoSync()"
+        />
+      </div>
     </div>
   </body>
 </html>
