@@ -45,36 +45,23 @@ const init = async () => {
 init();
 
 export const flyTo = async (lng, lat) => {
-  const position = Cartographic.fromDegrees(lng, lat);
-  const updatedPosition = await sampleTerrainMostDetailed(terrainProvider, [position]);
-  location = { lng, lat, alt: updatedPosition[0].height };
+  const altitude = await getGroundAltitude(lng, lat);
+  location = { lng, lat, alt: altitude };
   viewer.scene.camera.flyTo({
     destination: Cartesian3.fromDegrees(lng, lat, location.alt + 300),
     duration: 0.25 // seconds
   });
 };
 
-export const createModel = (url, altitude, coordinates) => {
-  altitude += 0.01;
-  if (location.alt === -9999) {
-    return;
-  }
-  // viewer.entities.removeAll();
-  // 46°22′53.814″N 7°37′23.537″E
-  let position;
-  if (!coordinates) {
-    position = Cartesian3.fromDegrees(
-      location.lng,
-      location.lat,
-      location.alt + altitude
-    );
-  } else {
-    position = Cartesian3.fromDegrees(
-      coordinates[0],
-      coordinates[1],
-      location.alt + altitude
-    );
-  }
+const getGroundAltitude = async (lng, lat) => {
+  const position = Cartographic.fromDegrees(lng, lat);
+  const updatedPosition = await sampleTerrainMostDetailed(terrainProvider, [position]);
+  return updatedPosition[0].height;
+};
+
+export const createModel = async (url, coordinates) => {
+  const altitude = await getGroundAltitude(...coordinates);
+  const position = Cartesian3.fromDegrees(...coordinates, altitude);
   const heading = CMath.toRadians(135);
   const pitch = 0;
   const roll = 0;
@@ -100,7 +87,7 @@ export const setFeaturesOnCesium = (features) => {
     const type = feature.getGeometry().getType();
     if (type === 'Point') {
       const coordinates = toLonLat(feature.getGeometry().getCoordinates());
-      createModel(feature.get('kind'), 0, coordinates);
+      createModel(feature.get('kind'), coordinates);
       return;
     }
     console.log(`Type: "${type}" is not implemented`);

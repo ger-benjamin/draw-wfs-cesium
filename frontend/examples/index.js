@@ -35,9 +35,9 @@ const locationSelect = () => {
 window.example.locationSelect = locationSelect;
 
 const objects = [
-  { type: 'Point', url: './models/tent3.glb' },
-  { type: 'Point', url: './models/firecamp.glb' },
-  { type: 'Point', url: './models/tree2.glb' },
+  { type: 'Point', url: './models/tent1.glb' },
+  { type: 'Point', url: './models/firecamp_anim.glb' },
+  { type: 'Point', url: './models/tree1.glb' },
   { type: 'LineString', url: './models/tree1.glb' },
   { type: 'Polygon', url: './models/tree1.glb' },
   { type: 'Polygon', url: './models/tent1.glb' }
@@ -74,7 +74,16 @@ const setAutoSync = () => {
 };
 window.example.setAutoSync = setAutoSync;
 
-const sentGeoJson = async () => {
+const setKindAndSend = (evt) => {
+  const kind = `${evt.feature.get('kind')}`;
+  if (kind.includes('tree') || kind.includes('tent')) {
+    const newKind = kind.replace('1', Math.ceil(Math.random() * 3));
+    evt.feature.set('kind', newKind);
+  }
+  debouceSendGeoJson(evt);
+};
+
+const sendGeoJson = async () => {
   getDraw().removeInteractions();
   const geoJson = toGeoJson(getAllDrawnObjects());
   const response = await fetch('http://localhost:3000/setdraw', {
@@ -91,9 +100,9 @@ const sentGeoJson = async () => {
   objectSelect();
   console.log(response);
 };
-const debouceSentGeoJson = debounce(sentGeoJson, 250);
+const debouceSendGeoJson = debounce(sendGeoJson, 250);
 
 const drawSource = getDraw().getSource();
-drawSource.on('changefeature', debouceSentGeoJson);
-drawSource.on('addfeature', debouceSentGeoJson);
-drawSource.on('removefeature', debouceSentGeoJson);
+drawSource.on('changefeature', debouceSendGeoJson);
+drawSource.on('addfeature', setKindAndSend);
+drawSource.on('removefeature', debouceSendGeoJson);
