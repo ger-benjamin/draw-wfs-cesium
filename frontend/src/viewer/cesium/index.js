@@ -9,11 +9,9 @@ import {
   SunLight,
   sampleTerrainMostDetailed,
   createWorldTerrainAsync,
-  Cartographic,
-  IonResource
+  Cartographic
 } from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
-import { GeoJSON } from 'ol/format';
 import { toLonLat } from 'ol/proj';
 
 window.CESIUM_BASE_URL = '/';
@@ -86,10 +84,14 @@ export const setFeaturesOnCesium = (features) => {
   features.forEach((feature) => {
     const type = feature.getGeometry().getType();
     if (type === 'Point') {
-      const coordinates = toLonLat(feature.getGeometry().getCoordinates());
-      createModel(feature.get('kind'), coordinates);
+      createModelFromPoint(feature);
       return;
     }
     console.log(`Type: "${type}" is not implemented`);
   });
+};
+
+const createModelFromPoint = (feature) => {
+  const coordinates = toLonLat(feature.getGeometry().getCoordinates());
+  createModel(feature.get('kind'), coordinates);
 };

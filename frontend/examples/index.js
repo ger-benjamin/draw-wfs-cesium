@@ -6,7 +6,8 @@ import {
   getDraw,
   setCenter,
   setDraw,
-  toGeoJson
+  toGeoJson,
+  featureToPointFeatures
 } from '../src/viewer/ol';
 import { flyTo, setFeaturesOnCesium } from '../src/viewer/cesium';
 
@@ -63,7 +64,7 @@ const loadSelect = async () => {
   if (!autoSync) {
     setFeaturesOnDrawing(features);
   }
-  setFeaturesOnCesium(features);
+  setFeaturesOnCesium(featureToPointFeatures(features));
 };
 window.example.loadSelect = loadSelect;
 
@@ -73,15 +74,6 @@ const setAutoSync = () => {
   console.log(autoSync);
 };
 window.example.setAutoSync = setAutoSync;
-
-const setKindAndSend = (evt) => {
-  const kind = `${evt.feature.get('kind')}`;
-  if (kind.includes('tree') || kind.includes('tent')) {
-    const newKind = kind.replace('1', Math.ceil(Math.random() * 3));
-    evt.feature.set('kind', newKind);
-  }
-  debouceSendGeoJson(evt);
-};
 
 const sendGeoJson = async () => {
   getDraw().removeInteractions();
@@ -104,5 +96,5 @@ const debouceSendGeoJson = debounce(sendGeoJson, 250);
 
 const drawSource = getDraw().getSource();
 drawSource.on('changefeature', debouceSendGeoJson);
-drawSource.on('addfeature', setKindAndSend);
+drawSource.on('addfeature', debouceSendGeoJson);
 drawSource.on('removefeature', debouceSendGeoJson);

@@ -6,6 +6,8 @@ import { fromLonLat } from 'ol/proj';
 import { DrawObjects } from './drawObjects';
 import GeoJSON from 'ol/format/GeoJSON.js';
 
+export { featureToPointFeatures } from './featureToPointFeatures';
+
 const view = new View({
   center: [0, 0],
   zoom: 2
