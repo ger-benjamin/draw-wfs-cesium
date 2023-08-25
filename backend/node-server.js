@@ -4,6 +4,8 @@ const fs = require('fs');
 const hostname = '127.0.0.1';
 const port = 3000;
 const geojsonFilePath = './draw-geojson.json';
+// Come from https://sig.biel-bienne.ch/datastore/E331_Baumkataster-Cadastre_des_arbres/e331_baumkataster.json to avoid cors errors
+const bielTreesGeojsonFilePath = './biel-trees.json';
 
 const server = http.createServer((req, res) => {
     console.log(req.method, req.url);
@@ -12,12 +14,16 @@ const server = http.createServer((req, res) => {
         res.end();
         return;
     }
+    if (req.url.split('/')[1] === 'getbieltrees' && req.method === 'GET') {
+        returnGeojson(req, res, bielTreesGeojsonFilePath);
+        return;
+    }
     if (req.url.split('/')[1] === 'setdraw' && req.method === 'POST') {
         setDraw(req, res);
         return;
     }
     if (req.url.split('/')[1] === 'getdraw' && req.method === 'GET') {
-        returnGeojson(req, res);
+        returnGeojson(req, res, geojsonFilePath);
         return;
     }
     console.error('no match');
@@ -42,8 +48,8 @@ const setDraw = (req, res) => {
     });
 }
 
-const returnGeojson = (req, res) => {
-    const geojson = fs.readFileSync(geojsonFilePath, {encoding: 'utf-8'});
+const returnGeojson = (req, res, filename) => {
+    const geojson = fs.readFileSync(filename, {encoding: 'utf-8'});
     res.statusCode = 200;
     setCors(res);
     res.setHeader('Content-Type', 'application/json');

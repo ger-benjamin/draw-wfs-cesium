@@ -25,7 +25,8 @@ const getFormValue = (selector, isCheckbox = false) => {
 
 const locations = [
   { name: 'leukerbad', coords: [7.623205, 46.381615] },
-  { name: 'estavayer', coords: [6.84671, 46.8558] }
+  { name: 'estavayer', coords: [6.84671, 46.8558] },
+  { name: 'biel', coords: [7.2435, 47.13241] }
 ];
 const locationSelect = () => {
   const name = getFormValue('#locations');
@@ -34,6 +35,10 @@ const locationSelect = () => {
   setCenter(...dest.coords);
 };
 window.example.locationSelect = locationSelect;
+
+const bielServer = 'bielServer';
+const localServer = 'locahost';
+let server = localServer;
 
 const objects = [
   { type: 'Point', url: './models/tent1.glb' },
@@ -50,8 +55,34 @@ const objectSelect = () => {
 };
 window.example.objectSelect = objectSelect;
 
+const mapFeatureToObject = (features) => {
+  return features
+    .filter((feature) => {
+      if (server === bielServer) {
+        return feature.getGeometry().getType() === 'Point';
+      }
+      return true;
+    })
+    .map((feature) => {
+      if (server === bielServer) {
+        feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+        const text = '' + feature.get('typ_fr');
+        if (!text) {
+          feature.set('kind', './models/tree1.glb');
+        } else if (text === 'Conifère') {
+          feature.set('kind', './models/tree2.glb');
+        } else {
+          feature.set('kind', './models/tree3.glb');
+        }
+        return feature;
+      }
+      return feature;
+    });
+};
+
 const loadSelect = async () => {
-  const url = getFormValue('#load');
+  const url = '' + getFormValue('#load');
+  server = url.includes('biel') ? bielServer : localServer;
   const geojsonData = await fetch(url, {
     method: 'GET',
     headers: {
@@ -60,7 +91,8 @@ const loadSelect = async () => {
     }
   });
   const geoJson = await geojsonData.json();
-  const features = featuresFromGeoJson(geoJson);
+  const features = mapFeatureToObject(featuresFromGeoJson(geoJson));
+  features.length = 1000;
   if (!autoSync) {
     setFeaturesOnDrawing(features);
   }
@@ -68,7 +100,7 @@ const loadSelect = async () => {
 };
 window.example.loadSelect = loadSelect;
 
-let autoSync = true;
+let autoSync = false;
 const setAutoSync = () => {
   autoSync = getFormValue('#autosync', true);
   console.log(autoSync);

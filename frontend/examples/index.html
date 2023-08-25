@@ -47,7 +47,8 @@
         >
           <option disabled selected value>-- select an option --</option>
           <option value="leukerbad">Leukerbad</option>
-          <option value="estavayer">Estavayer-le-lac</option>
+          <option value="estavayer">Estavayer-le-Lac</option>
+          <option value="biel">Biel/Bienne</option>
         </select>
       </div>
       <div>
@@ -56,13 +57,13 @@
           <option value="http://localhost:3000/getdraw">
             http://localhost:3000/getdraw
           </option>
+          <option value="http://localhost:3000/getbieltrees">Trees in Biel/Bienne</option>
         </select>
-        <label for="autosync">Load features from:</label>
+        <label for="autosync">Auto sync:</label>
         <input
           type="checkbox"
           name="autosync"
           id="autosync"
-          checked
           onchange="window.example.setAutoSync()"
         />
       </div>
