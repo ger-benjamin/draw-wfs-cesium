@@ -8,8 +8,12 @@ import {
   ShadowMode,
   SunLight,
   sampleTerrainMostDetailed,
-  createWorldTerrainAsync,
-  Cartographic
+  CesiumTerrainProvider,
+  Cartographic,
+  Rectangle,
+  ImageryLayer,
+  UrlTemplateImageryProvider,
+  RequestScheduler
 } from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import { toLonLat } from 'ol/proj';
@@ -17,14 +21,30 @@ import { toLonLat } from 'ol/proj';
 window.CESIUM_BASE_URL = '/';
 // Ion.defaultAccessToken = '';
 
+const SWITZERLAND_RECTANGLE = Rectangle.fromDegrees(4, 45, 12, 48);
+
 let viewer;
 let location = { lng: 0, lat: 0, alt: -9999 };
 let terrainProvider;
 
 const init = async () => {
+  Object.assign(RequestScheduler.requestsByServer, {
+    'wmts.geo.admin.ch:443': 28,
+    'download.swissgeol.ch:443': 28,
+    'tile.openstreetmap.org:443': 28
+  });
   const sunLight = new SunLight();
-  terrainProvider = await createWorldTerrainAsync();
+  terrainProvider = await CesiumTerrainProvider.fromUrl(
+    'https://download.swissgeol.ch/cli_terrain/ch-2m/'
+  );
   viewer = new Viewer('cesiumContainer', {
+    baseLayer: new ImageryLayer(
+      new UrlTemplateImageryProvider({
+        url: 'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
+        rectangle: SWITZERLAND_RECTANGLE
+      }),
+      {}
+    ),
     terrainProvider,
     terrainShadows: ShadowMode.ENABLED,
     infoBox: false,
